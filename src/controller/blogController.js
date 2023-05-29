@@ -5,7 +5,7 @@ const blogModel = require("../model/blogModel");
 //====================================CREATE BLOG==============================================
 // Create a new blog
 const createBlog = async function (req, res) {
-  const { authorId, ...blogDocument } = req.body;
+  const {authorId} = req.body;
 
   try {
     // Check if the author exists
@@ -15,7 +15,7 @@ const createBlog = async function (req, res) {
     }
 
     // Create the blog
-    const postBlog = await blogModel.create(blogDocument);
+    const postBlog = await blogModel.create(req.body);
     return res.status(201).send({ status: true, data: postBlog });
   } catch (err) {
     return res.status(500).send({ status: false, error: err });

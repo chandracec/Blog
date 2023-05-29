@@ -13,7 +13,7 @@ router.post('/authors',valid.validateAuthor, authorController.author);
 router.post('/blogs', midAuth.authentication, blogController.createBlog);//valid.validateBlog,
 
 // Get blogs
-router.get('/blogs', midAuth.authentication, blogController.getBlogs);
+router.get('/blogs',  blogController.getBlogs);
 
 // Update blog
 router.put('/blogs/:id', midAuth.authentication, midAuth.authorisation, blogController.updateBlog);
