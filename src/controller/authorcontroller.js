@@ -16,7 +16,7 @@ const author = async function (req, res) {
 module.exports.author = author;
 
 // Author login
-const loginAuthor = async function (req, res) {
+const loginAuthor = async function (req,res){
   try {
     const { email, password } = req.body;
 
@@ -40,4 +40,6 @@ const loginAuthor = async function (req, res) {
   }
 };
 
-module.exports.loginAuthor = loginAuthor;
+module.exports.loginAuthor = loginAuthor;//
+
+//+++++++++++++++++++++++++++   completed  ++++++++++++++++++++++++++++++++++++++++++//

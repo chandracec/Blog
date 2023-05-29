@@ -5,7 +5,7 @@ const blogModel = require("../model/blogModel");
 //====================================CREATE BLOG==============================================
 // Create a new blog
 const createBlog = async function (req, res) {
-  const {authorId} = req.body;
+  const { authorId } = req.body;
 
   try {
     // Check if the author exists
@@ -16,7 +16,10 @@ const createBlog = async function (req, res) {
 
     // Create the blog
     const postBlog = await blogModel.create(req.body);
-    return res.status(201).send({ status: true, data: postBlog });
+    const result = await blogModel
+      .findOne({ _id: postBlog._id })
+      .select({ _id: 0, authorId: 0 });
+    return res.status(201).send({ status: true, data: result });
   } catch (err) {
     return res.status(500).send({ status: false, error: err });
   }
@@ -29,22 +32,12 @@ module.exports.createBlog = createBlog;
 // Retrieve blogs based on query parameters
 const getBlogs = async function (req, res) {
   const qparam = req.query;
-
   try {
-
-    if (qparam.length == 0) {
-      const blog = await blogModel.find(
-        { isDeleted: false },
-        { isPublished: true }
-      );
-      return res.status(200).send({ status: true, data: blog });
-    }
-
     // Find blogs that match the query parameters and are not deleted or unpublished
     const getdata = await blogModel.find({
       $and: [qparam, { isDeleted: false }, { isPublished: true }],
     });
-    if (!getdata) {
+    if (getdata.length == 0) {
       return res.status(400).send({ status: false, msg: "Blog not found" });
     }
     return res.status(200).send({ status: true, data: getdata });
@@ -59,7 +52,7 @@ module.exports.getBlogs = getBlogs;
 
 // Update a blog by its ID
 const updateBlog = async function (req, res) {
-  const blogId = req.params.blogId;
+  const blogId = req.params.blogid;
   const {
     body: newBody,
     tags: newTags,
@@ -97,10 +90,10 @@ module.exports.updateBlog = updateBlog;
 
 // Delete a blog by its ID
 const deleteBlog = async function (req, res) {
-  const blogId = req.params.blogId;
-  
-   if(!blogId) return res.status(500).send("blogId is required")
-   
+  const blogId = req.params.blogid;
+
+  if (!blogId) return res.status(500).send("blogId is required");
+
   try {
     // Find the blog by ID and set the isDeleted and deletedAt properties
     const blog = await blogModel.findOneAndUpdate(
@@ -126,9 +119,6 @@ module.exports.deleteBlog = deleteBlog;
 const deleteByQuery = async (req, res) => {
   try {
     const data = req.query;
-    if (Object.keys(data).length === 0) {
-      return res.status(200).send({ msg: "No query found to delete the blog" });
-    }
 
     // Update multiple blogs that match the query and set the isDeleted and deletedAt properties
     const op = await blogModel.updateMany(data, {
@@ -136,7 +126,7 @@ const deleteByQuery = async (req, res) => {
     });
 
     if (op.modifiedCount > 0) {
-      return res.status(200).send({ msg: "Blogs deleted" });
+      return res.status(200).send({ msg: `${op.modifiedCount} Blogs deleted` });
     } else {
       return res
         .status(404)
