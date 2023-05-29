@@ -18,7 +18,6 @@ const blogSchema = new mongoose.Schema(
 
     authorId: {
       type: objId,
-      required: true,
       ref: "Author",
     },
 

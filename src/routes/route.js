@@ -10,7 +10,7 @@ const valid = require('../middleware/validate')
 router.post('/authors',valid.validateAuthor, authorController.author);
 
 // Create blog
-router.post('/blogs',valid.validateBlog, midAuth.authentication, blogController.createBlog);
+router.post('/blogs', midAuth.authentication, blogController.createBlog);//valid.validateBlog,
 
 // Get blogs
 router.get('/blogs', midAuth.authentication, blogController.getBlogs);

@@ -42,9 +42,7 @@ function validateLogin(req, res, next) {
   }
 
   if (!isValidPassword) {
-    return res
-      .status(400)
-      .json({ status: false, msg: "Invalid password" });
+    return res.status(400).json({ status: false, msg: "Invalid password" });
   }
 
   next();
@@ -56,9 +54,7 @@ const validateAuthor = async (req, res, next) => {
   const errors = [];
 
   if (!isValidBody(req.body)) {
-    return res
-      .status(400)
-      .json({ status: false, msg: "Body can't be empty" });
+    return res.status(400).json({ status: false, msg: "Body can't be empty" });
   }
 
   // Check if required fields are present
@@ -112,14 +108,13 @@ const validateAuthor = async (req, res, next) => {
 };
 
 //================================================BLOG===============================================
+
 const validateBlog = async (req, res, next) => {
   const { title, body, authorId, tags, category, subcategory } = req.body;
   const errors = [];
 
   if (!isValidBody(req.body)) {
-    return res
-      .status(400)
-      .json({ status: false, msg: "Body can't be empty" });
+    return res.status(400).json({ status: false, msg: "Body can't be empty" });
   }
 
   // Check if required fields are present
@@ -137,12 +132,18 @@ const validateBlog = async (req, res, next) => {
   if (!category) {
     errors.push("Category is mandatory");
   }
-  if (!tags) {
+  if (!tags || tags.length == 0) {
     errors.push("Tags are required");
-  }
+  } 
+  // else if (typeof tags != [String]) {
+  //   errors.push("Give Tags in [String] dataType");
+  // }
   if (!subcategory) {
     errors.push("Subcategory is not present");
   }
+  // if (typeof subcategory != [String]) {
+  //   errors.push("Give subcategory in [String] dataType"); 
+  // }
 
   // Return errors if any
   if (errors.length > 0) {
